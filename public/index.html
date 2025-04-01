@@ -1,11 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatec</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestão Municipal</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              950: '#082f49',
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-    <h1>Fatec Votorantim</h1>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <!-- Cabeçalho -->
+  <header class="bg-primary-700 text-white shadow-md">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Sistema de Gestão Municipal</h1>
+        <nav>
+          <ul class="flex space-x-6">
+            <li><a href="index.html" class="text-white hover:text-primary-200 font-medium">Início</a></li>
+            <li><a href="municipios.html" class="text-white hover:text-primary-200 font-medium">Municípios</a></li>
+            <li><a href="#" class="text-white hover:text-primary-200 font-medium">Relatórios</a></li>
+            <li><a href="#" class="text-white hover:text-primary-200 font-medium">Sobre</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <!-- Hero Section -->
+    <section class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+      <div class="flex flex-col md:flex-row">
+        <div class="md:w-1/2 p-8 flex flex-col justify-center">
+          <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Sistema de Gestão Municipal</h2>
+          <p class="text-gray-600 mb-6">
+            Uma plataforma completa para gerenciamento de dados municipais do Brasil.
+            Acesse, cadastre e gerencie informações sobre municípios de forma simples e eficiente.
+          </p>
+          <div class="flex space-x-4">
+            <a href="municipios.html" class="bg-primary-600 text-white px-6 py-3 rounded-md font-medium hover:bg-primary-700 transition-colors inline-flex items-center">
+              <i class="fas fa-map-marker-alt mr-2"></i>
+              Gerenciar Municípios
+            </a>
+            <a href="#" class="border border-primary-600 text-primary-600 px-6 py-3 rounded-md font-medium hover:bg-primary-50 transition-colors inline-flex items-center">
+              <i class="fas fa-info-circle mr-2"></i>
+              Saiba Mais
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2 bg-primary-100 p-8 flex items-center justify-center">
+          <img src="https://via.placeholder.com/600x400?text=Mapa+do+Brasil" alt="Mapa do Brasil" class="max-w-full h-auto rounded-lg shadow-lg">
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="mb-8">
+      <h3 class="text-2xl font-bold text-gray-800 mb-6">Recursos do Sistema</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-database text-primary-600 text-xl"></i>
+          </div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Banco de Dados Completo</h4>
+          <p class="text-gray-600">
+            Acesse informações detalhadas sobre todos os municípios brasileiros, incluindo códigos IBGE, coordenadas geográficas e mais.
+          </p>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-search text-primary-600 text-xl"></i>
+          </div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Busca Avançada</h4>
+          <p class="text-gray-600">
+            Encontre rapidamente os municípios que você precisa com filtros avançados e ordenação personalizada.
+          </p>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+          <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-edit text-primary-600 text-xl"></i>
+          </div>
+          <h4 class="text-xl font-semibold text-gray-800 mb-2">Gestão Simplificada</h4>
+          <p class="text-gray-600">
+            Adicione, edite e remova municípios com facilidade através de uma interface intuitiva e amigável.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-primary-700 text-white rounded-lg shadow-md p-8 mb-8">
+      <h3 class="text-2xl font-bold mb-6 text-center">Estatísticas do Sistema</h3>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+        <div>
+          <div class="text-4xl font-bold mb-2">5.570</div>
+          <div class="text-primary-200">Municípios</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">27</div>
+          <div class="text-primary-200">Estados</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">5</div>
+          <div class="text-primary-200">Regiões</div>
+        </div>
+        <div>
+          <div class="text-4xl font-bold mb-2">26</div>
+          <div class="text-primary-200">Capitais</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p>&copy; 2025 Sistema de Gestão Municipal. Todos os direitos reservados.</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fab fa-github text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fab fa-linkedin text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white transition-colors">
+            <i class="fab fa-twitter text-xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
