@@ -627,8 +627,8 @@
                 const response = await fetch(`${API_URL}/municipios/${id}`);
                 const data = await response.json();
                 
-                if (data.data) {
-                    return data.data;
+                if (data) {
+                    return data
                 } else {
                     mostrarToast('Erro', 'Erro ao buscar município', false);
                     return null;
