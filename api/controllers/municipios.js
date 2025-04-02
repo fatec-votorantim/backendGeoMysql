@@ -48,7 +48,7 @@ try {
 }
 
 // Get municipio by ID
-export const getMunicipiosById = async (req, res) => {
+export const getMunicipioById = async (req, res) => {
 try {
   const { id } = req.params
   const db = req.app.locals.db
