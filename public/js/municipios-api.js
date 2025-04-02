@@ -1,5 +1,5 @@
 // API URL base - altere para o endereço da sua API
-const API_BASE_URL = "https://backend-geo-kappa.vercel.app"
+const API_BASE_URL = "https://backend-geo-kappa.vercel.app/api"
 
 // Objeto para gerenciar as chamadas à API - usando window para torná-lo global
 window.ApiService = {
