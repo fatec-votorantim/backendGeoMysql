@@ -66,10 +66,31 @@ Acesse uma IA Generativa como o [V0](https://v0.dev)
 ```
 Meu backend no Vercel é: https://backend-geo-kappa.vercel.app
 Existem os seguintes endpoints:
-api/municipios?page=1&limit=10&sort=_id&order=asc&nome= - GET
+api/municipios?page=1&limit=10&sort=_id&order=asc&nome= - GET (Os dados são retornados conforme exemplo: {"data":[{"_id":"67ed97841ce64dc6575f0bf1","codigo_ibge":3557006,"nome":"Votorantim","capital":false,"codigo_uf":35,"local":{"type":"Point","coordinates":[-47.4388,-23.5446]}}],"pagination":{"total":1,"page":1,"limit":10,"pages":1}})
 api/municipios/nearby?latitude=-16.7573&longitude=-45.4412&distance=10 - GET
 api/municipios/:id
 Além dos endpoints para o PUT, POST e DELETE
+
+A minha collection municipios no MongoDB está assim:
+{
+  "_id": {
+    "$oid": "67ed97841ce64dc6575ef650"
+  },
+  "codigo_ibge": 4100103,
+  "nome": "Abatiá",
+  "capital": false,
+  "codigo_uf": 41,
+  "local": {
+    "type": "Point",
+    "coordinates": [
+      -50.3133,
+      -23.3049
+    ]
+  }
+}
+
+Para as validações, foi usado o express-validator. Exemplo de erro:
+{"error":true,"message":"Erro de validação","errors":[{"type":"field","msg":"O código IBGE é obrigatório","path":"codigo_ibge","location":"body"},{"type":"field","msg":"O código IBGE deve ser um número inteiro de 7 dígitos","path":"codigo_ibge","location":"body"},{"type":"field","msg":"O campo capital deve ser um valor booleano","path":"capital","location":"body"},{"type":"field","msg":"O código UF é obrigatório","path":"codigo_uf","location":"body"},{"type":"field","msg":"O código UF deve ser um número inteiro entre 1 e 99","path":"codigo_uf","location":"body"},{"type":"field","msg":"O campo local é obrigatório","path":"local","location":"body"},{"type":"field","msg":"O campo local deve ser um objeto","path":"local","location":"body"},{"type":"field","msg":"O tipo do local é obrigatório","path":"local.type","location":"body"},{"type":"field","msg":"O tipo do local deve ser \"Point\"","path":"local.type","location":"body"},{"type":"field","msg":"As coordenadas são obrigatórias","path":"local.coordinates","location":"body"},{"type":"field","msg":"As coordenadas devem ser um array com exatamente 2 elementos","path":"local.coordinates","location":"body"},{"type":"field","msg":"A longitude deve estar entre -180 e 180","path":"local.coordinates[0]","location":"body"},{"type":"field","msg":"A latitude deve estar entre -90 e 90","path":"local.coordinates[1]","location":"body"}]}
 
 Utilizando apenas HTML, CSS e JS com estilização em dark e roxo com o Tailwind, crie uma landing page e nela insira um link para permitir ao usuário fazer um CRUD dos municipios. 
 
