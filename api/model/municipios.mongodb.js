@@ -20,3 +20,6 @@ db.municipios.find().forEach(function(municipio) {
         }
     )  
 })
+
+use('test')
+db.municipios.createIndex({ local: "2dsphere" })
