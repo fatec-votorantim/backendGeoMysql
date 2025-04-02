@@ -59,6 +59,23 @@ Antes de começar, você precisará ter instalado em sua máquina:
 | dotenv | ^10.x.x | Carrega variáveis de ambiente de arquivos .env |
 | nodemon | ^2.x.x | Ferramenta que reinicia automaticamente o servidor após alterações |
 
+## Criação do frontend com V0
+Acesse uma IA Generativa como o [V0](https://v0.dev)
+
+>> Sugestão de um prompt
+```
+Meu backend no Vercel é: https://backend-geo-kappa.vercel.app
+Existem os seguintes endpoints:
+api/municipios?page=1&limit=10&sort=_id&order=asc&nome= - GET
+api/municipios/nearby?latitude=-16.7573&longitude=-45.4412&distance=10 - GET
+api/municipios/:id
+Além dos endpoints para o PUT, POST e DELETE
+
+Utilizando apenas HTML, CSS e JS com estilização em dark e roxo com o Tailwind, crie uma landing page e nela insira um link para permitir ao usuário fazer um CRUD dos municipios. 
+
+Crie um filtro onde o usuário poderá obter a localização do navegador e digitar a distância desejada. Toda a interface deverá estar em pt-br
+```
+
 ## Estrutura do Projeto
 
 ```
