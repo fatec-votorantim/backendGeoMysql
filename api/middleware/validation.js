@@ -1,23 +1,26 @@
-import { check, param, validationResult } from "express-validator"
-import { ObjectId } from "mongodb"
+import { check, param, validationResult } from "express-validator";
+import { db } from "../config/db.js"; // Importe o pool de conexões do seu db.js
 
 // Middleware para verificar resultados da validação
 export const validateRequest = (req, res, next) => {
-  const errors = validationResult(req)
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       error: true,
       message: "Erro de validação",
       errors: errors.array(),
-    })
+    });
   }
-  next()
-}
+  next();
+};
 
-// Validar ObjectId
-export const validateObjectId = [param("id").isMongoId().withMessage("Formato de ID inválido"), validateRequest]
+// Validar ID (assumindo que o ID no MySQL é um inteiro)
+export const validateId = [
+  param("id").isInt({ min: 1 }).withMessage("Formato de ID inválido"),
+  validateRequest,
+];
 
-// Validações para o município
+// Validações para o município (CREATE)
 export const validateMunicipio = [
   // Valida o código IBGE
   check("codigo_ibge")
@@ -26,31 +29,35 @@ export const validateMunicipio = [
     .isInt({ min: 1000000, max: 9999999 })
     .withMessage("O código IBGE deve ser um número inteiro de 7 dígitos")
     .custom(async (codigo_ibge, { req }) => {
-      const db = req.app.locals.db
+      try {
+        const [rows] = await db.execute(
+          "SELECT COUNT(*) AS count FROM municipios WHERE codigo_ibge = ?",
+          [codigo_ibge]
+        );
 
-      // Monta a query para verificar a unicidade
-      const query = { codigo_ibge }
-      if (req.method === "PUT" && req.params.id) {
-        // Exclui o registro atual da verificação de unicidade
-        query["_id"] = { $ne: new ObjectId(req.params.id) }
+        const count = rows[0].count;
+        if (count > 0) {
+          throw new Error(
+            "O código IBGE informado já está cadastrado em outro município"
+          );
+        }
+        return true;
+      } catch (error) {
+        console.error("Erro ao verificar código IBGE:", error);
+        throw error;
       }
-
-      // Verifica se existe algum registro com o mesmo código IBGE
-      const existe = await db.collection("municipios").countDocuments(query)
-      if (existe > 0) {
-        throw new Error("O código IBGE informado já está cadastrado em outro município")
-      }
-      return true
     }),
 
   // Valida o nome do município
   check("nome")
     .notEmpty()
     .withMessage("O nome do município é obrigatório")
-    .isLength({ max: 100 })
-    .withMessage("O nome do município deve ter no máximo 100 caracteres")
+    .isLength({ max: 255 })
+    .withMessage("O nome do município deve ter no máximo 255 caracteres")
     .matches(/^[A-Za-zÀ-ú\s()\-.,'"!?]+$/, "i")
-    .withMessage("O nome do município deve conter apenas letras, espaços e caracteres especiais válidos"),
+    .withMessage(
+      "O nome do município deve conter apenas letras, espaços e caracteres especiais válidos"
+    ),
 
   // Valida o campo capital
   check("capital")
@@ -64,40 +71,23 @@ export const validateMunicipio = [
     .isInt({ min: 1, max: 99 })
     .withMessage("O código UF deve ser um número inteiro entre 1 e 99"),
 
-  // Valida o objeto local
-  check("local")
+  // Valida a longitude
+  check("longitude")
     .notEmpty()
-    .withMessage("O campo local é obrigatório")
-    .isObject()
-    .withMessage("O campo local deve ser um objeto"),
-
-  // Valida o tipo do local
-  check("local.type")
-    .notEmpty()
-    .withMessage("O tipo do local é obrigatório")
-    .equals("Point")
-    .withMessage('O tipo do local deve ser "Point"'),
-
-  // Valida as coordenadas
-  check("local.coordinates")
-    .notEmpty()
-    .withMessage("As coordenadas são obrigatórias")
-    .isArray({ min: 2, max: 2 })
-    .withMessage("As coordenadas devem ser um array com exatamente 2 elementos"),
-
-  // Valida a longitude (primeiro elemento das coordenadas)
-  check("local.coordinates.0")
+    .withMessage("A longitude é obrigatória")
     .isFloat({ min: -180, max: 180 })
     .withMessage("A longitude deve estar entre -180 e 180"),
 
-  // Valida a latitude (segundo elemento das coordenadas)
-  check("local.coordinates.1")
+  // Valida a latitude
+  check("latitude")
+    .notEmpty()
+    .withMessage("A latitude é obrigatória")
     .isFloat({ min: -90, max: 90 })
     .withMessage("A latitude deve estar entre -90 e 90"),
 
   // Aplica as validações
   validateRequest,
-]
+];
 
 // Validações para atualização parcial do município (PUT/PATCH)
 export const validateUpdateMunicipio = [
@@ -107,30 +97,36 @@ export const validateUpdateMunicipio = [
     .isInt({ min: 1000000, max: 9999999 })
     .withMessage("O código IBGE deve ser um número inteiro de 7 dígitos")
     .custom(async (codigo_ibge, { req }) => {
-      const db = req.app.locals.db
-
-      // Monta a query para verificar a unicidade
-      const query = { codigo_ibge }
-      if (req.params.id) {
-        // Exclui o registro atual da verificação de unicidade
-        query["_id"] = { $ne: new ObjectId(req.params.id) }
+      if (codigo_ibge) {
+        try {
+          const [rows] = await db.execute(
+            "SELECT COUNT(*) AS count FROM municipios WHERE codigo_ibge = ? AND id != ?",
+            [codigo_ibge, req.params.id]
+          );
+          const count = rows[0].count;
+          if (count > 0) {
+            throw new Error(
+              "O código IBGE informado já está cadastrado em outro município"
+            );
+          }
+          return true;
+        } catch (error) {
+          console.error("Erro ao verificar código IBGE:", error);
+          throw error;
+        }
       }
-
-      // Verifica se existe algum registro com o mesmo código IBGE
-      const existe = await db.collection("municipios").countDocuments(query)
-      if (existe > 0) {
-        throw new Error("O código IBGE informado já está cadastrado em outro município")
-      }
-      return true
+      return true;
     }),
 
   // Valida o nome do município (opcional na atualização)
   check("nome")
     .optional()
-    .isLength({ max: 100 })
-    .withMessage("O nome do município deve ter no máximo 100 caracteres")
-    .matches(/^[A-Za-zÀ-ú\s()\-.,'"!?]+$/, "i")
-    .withMessage("O nome do município deve conter apenas letras, espaços e caracteres especiais válidos"),
+    .isLength({ max: 255 })
+    .withMessage("O nome do município deve ter no máximo 255 caracteres")
+    .matches(/^[A-Za-zÀ-ú\s()\-.,'\"!?]+$/, "i")
+    .withMessage(
+      "O nome do município deve conter apenas letras, espaços e caracteres especiais válidos"
+    ),
 
   // Valida o campo capital (opcional na atualização)
   check("capital")
@@ -144,37 +140,18 @@ export const validateUpdateMunicipio = [
     .isInt({ min: 1, max: 99 })
     .withMessage("O código UF deve ser um número inteiro entre 1 e 99"),
 
-  // Valida o objeto local (opcional na atualização)
-  check("local")
-    .optional()
-    .isObject()
-    .withMessage("O campo local deve ser um objeto"),
-
-  // Valida o tipo do local (opcional na atualização)
-  check("local.type")
-    .optional()
-    .equals("Point")
-    .withMessage('O tipo do local deve ser "Point"'),
-
-  // Valida as coordenadas (opcional na atualização)
-  check("local.coordinates")
-    .optional()
-    .isArray({ min: 2, max: 2 })
-    .withMessage("As coordenadas devem ser um array com exatamente 2 elementos"),
-
-  // Valida a longitude (primeiro elemento das coordenadas) (opcional na atualização)
-  check("local.coordinates.0")
+  // Valida a longitude (opcional na atualização)
+  check("longitude")
     .optional()
     .isFloat({ min: -180, max: 180 })
     .withMessage("A longitude deve estar entre -180 e 180"),
 
-  // Valida a latitude (segundo elemento das coordenadas) (opcional na atualização)
-  check("local.coordinates.1")
+  // Valida a latitude (opcional na atualização)
+  check("latitude")
     .optional()
     .isFloat({ min: -90, max: 90 })
     .withMessage("A latitude deve estar entre -90 e 90"),
 
   // Aplica as validações
   validateRequest,
-]
-
+];

@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors' // Importa o módulo cors
-import { connectToDatabase } from './config/db.js'
+import initializeDatabase from './config/databaseInitialization.js'; // Assumindo que você salvou o código acima em databaseInitialization.js
+import 'dotenv/config' // Importa o módulo dotenv que serve para carregar variáveis de ambiente
+
 import municipiosRoutes from './routes/municipios.js'
 
 const app = express()
@@ -16,8 +18,8 @@ app.use('/api/municipios', municipiosRoutes)
 //define o favicon
 app.use('/favicon.ico', express.static('public/images/logo.png'))
 //start the server
-connectToDatabase(app).then(() => {
+initializeDatabase(app).then(() => {
     app.listen(PORT, () => {
-        console.log(`Servidor rodando na porta ${PORT}!`)
-    })
-})
+      console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    });
+  });
